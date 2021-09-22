@@ -17,6 +17,7 @@ package rest
 import (
 	"context"
 	"errors"
+	"net/http"
 
 	commonhttp "github.com/goharbor/harbor/src/common/http"
 	"github.com/goharbor/harbor/src/common/http/modifier"
@@ -31,6 +32,11 @@ type Driver struct {
 
 // NewRESTDriver - Create Driver
 func NewRESTDriver(configRESTURL string, modifiers ...modifier.Modifier) *Driver {
+	if commonhttp.InternalTLSEnabled() {
+		tr := commonhttp.GetHTTPTransport(commonhttp.SecureTransport)
+		return &Driver{configRESTURL: configRESTURL, client: commonhttp.NewClient(&http.Client{Transport: tr}, modifiers...)}
+
+	}
 	return &Driver{configRESTURL: configRESTURL, client: commonhttp.NewClient(nil, modifiers...)}
 }
 

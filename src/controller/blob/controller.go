@@ -17,9 +17,8 @@ package blob
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/goharbor/harbor/src/lib/q"
+	"time"
 
 	"github.com/docker/distribution"
 	"github.com/goharbor/harbor/src/lib/errors"
@@ -304,7 +303,7 @@ func (c *controller) Sync(ctx context.Context, references []distribution.Descrip
 			}
 
 			return nil
-		})(orm.SetTransactionOpNameToContext(ctx, "tx-sync-blob"))
+		})(ctx)
 	}
 
 	if len(missing) > 0 {

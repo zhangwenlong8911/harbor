@@ -1,11 +1,10 @@
 package main
 
 import (
+	"github.com/goharbor/harbor/src/common/models"
 	"net/http"
 	"os"
 	"strings"
-
-	"github.com/goharbor/harbor/src/common/models"
 
 	_ "github.com/lib/pq"
 	"github.com/prometheus/client_golang/prometheus"
@@ -44,7 +43,7 @@ func main() {
 		HarborHost:   viper.GetString("service.host"),
 		HarborPort:   viper.GetInt("service.port"),
 		Client: &http.Client{
-			Transport: commonthttp.GetHTTPTransport(),
+			Transport: commonthttp.GetHTTPTransport(commonthttp.SecureTransport),
 		},
 	})
 

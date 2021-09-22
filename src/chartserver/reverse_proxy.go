@@ -53,7 +53,7 @@ func NewProxyEngine(target *url.URL, cred *Credential, middlewares ...func(http.
 			director(target, cred, req)
 		},
 		ModifyResponse: modifyResponse,
-		Transport:      commonhttp.GetHTTPTransport(),
+		Transport:      commonhttp.GetHTTPTransport(commonhttp.SecureTransport),
 	}
 
 	if len(middlewares) > 0 {

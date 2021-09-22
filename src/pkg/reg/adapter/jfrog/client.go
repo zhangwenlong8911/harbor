@@ -23,6 +23,7 @@ import (
 
 	common_http "github.com/goharbor/harbor/src/common/http"
 	"github.com/goharbor/harbor/src/pkg/reg/model"
+	"github.com/goharbor/harbor/src/pkg/reg/util"
 	"github.com/goharbor/harbor/src/pkg/registry/auth/basic"
 )
 
@@ -47,7 +48,7 @@ func newClient(reg *model.Registry) *client {
 	return &client{
 		client: common_http.NewClient(
 			&http.Client{
-				Transport: common_http.GetHTTPTransport(common_http.WithInsecure(reg.Insecure)),
+				Transport: util.GetHTTPTransport(reg.Insecure),
 			},
 			basic.NewAuthorizer(username, password),
 		),

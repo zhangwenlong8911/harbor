@@ -30,6 +30,7 @@ import (
 	adp "github.com/goharbor/harbor/src/pkg/reg/adapter"
 	"github.com/goharbor/harbor/src/pkg/reg/adapter/native"
 	"github.com/goharbor/harbor/src/pkg/reg/model"
+	"github.com/goharbor/harbor/src/pkg/reg/util"
 )
 
 func init() {
@@ -269,7 +270,7 @@ func newAdapter(registry *model.Registry) (adp.Adapter, error) {
 		modifiers = append(modifiers, authorizer)
 	}
 
-	transport := common_http.GetHTTPTransport(common_http.WithInsecure(registry.Insecure))
+	transport := util.GetHTTPTransport(registry.Insecure)
 	return &adapter{
 		Adapter:  native.NewAdapter(registry),
 		registry: registry,

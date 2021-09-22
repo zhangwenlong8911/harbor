@@ -5,12 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/goharbor/harbor/src/lib/config"
 	"io/ioutil"
 	"net/http"
 	"regexp"
 	"strings"
-
-	"github.com/goharbor/harbor/src/lib/config"
 
 	commonhttp "github.com/goharbor/harbor/src/common/http"
 	"github.com/goharbor/harbor/src/common/http/modifier/auth"
@@ -62,7 +61,7 @@ type DefaultClient struct {
 func NewDefaultClient(endpoint, secret string) *DefaultClient {
 	var c *commonhttp.Client
 	httpCli := &http.Client{
-		Transport: commonhttp.GetHTTPTransport(),
+		Transport: commonhttp.GetHTTPTransport(commonhttp.SecureTransport),
 	}
 	if len(secret) > 0 {
 		c = commonhttp.NewClient(httpCli, auth.NewSecretAuthorizer(secret))
@@ -82,12 +81,12 @@ func NewReplicationClient(endpoint, secret string) *DefaultClient {
 
 	if len(secret) > 0 {
 		c = commonhttp.NewClient(&http.Client{
-			Transport: commonhttp.GetHTTPTransport(),
+			Transport: commonhttp.GetHTTPTransport(commonhttp.SecureTransport),
 		},
 			auth.NewSecretAuthorizer(secret))
 	} else {
 		c = commonhttp.NewClient(&http.Client{
-			Transport: commonhttp.GetHTTPTransport(),
+			Transport: commonhttp.GetHTTPTransport(commonhttp.SecureTransport),
 		})
 	}
 

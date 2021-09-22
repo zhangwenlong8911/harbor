@@ -77,7 +77,7 @@ func newAdapter(registry *model.Registry) *adapter {
 			registry.Credential.AccessSecret)
 	}
 
-	var transport = common_http.GetHTTPTransport(common_http.WithInsecure(registry.Insecure))
+	var transport = util.GetHTTPTransport(registry.Insecure)
 
 	return &adapter{
 		Adapter:  native.NewAdapter(registry),

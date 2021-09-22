@@ -16,16 +16,13 @@ package bearer
 
 import (
 	"fmt"
+	"github.com/goharbor/harbor/src/lib/errors"
+	"github.com/goharbor/harbor/src/pkg/registry/auth/basic"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-
-	commonhttp "github.com/goharbor/harbor/src/common/http"
-	"github.com/goharbor/harbor/src/lib/errors"
-	"github.com/goharbor/harbor/src/pkg/registry/auth/basic"
 )
 
 func TestModify(t *testing.T) {
@@ -42,7 +39,7 @@ func TestModify(t *testing.T) {
 
 	// invalid credential
 	a := basic.NewAuthorizer("username", "invalid_password")
-	authorizer := NewAuthorizer(server.URL, "service", a, commonhttp.NewTransport())
+	authorizer := NewAuthorizer(server.URL, "service", a)
 	req, _ := http.NewRequest(http.MethodGet, server.URL, nil)
 	err := authorizer.Modify(req)
 	require.NotNil(t, err)
@@ -50,7 +47,7 @@ func TestModify(t *testing.T) {
 
 	// valid credential
 	a = basic.NewAuthorizer("username", "password")
-	authorizer = NewAuthorizer(server.URL, "service", a, commonhttp.NewTransport())
+	authorizer = NewAuthorizer(server.URL, "service", a)
 	req, _ = http.NewRequest(http.MethodGet, server.URL, nil)
 	err = authorizer.Modify(req)
 	require.Nil(t, err)

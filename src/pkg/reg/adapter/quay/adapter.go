@@ -31,6 +31,7 @@ import (
 	"github.com/goharbor/harbor/src/pkg/reg/adapter/native"
 	qauth "github.com/goharbor/harbor/src/pkg/reg/adapter/quay/auth"
 	"github.com/goharbor/harbor/src/pkg/reg/model"
+	"github.com/goharbor/harbor/src/pkg/reg/util"
 )
 
 var (
@@ -86,7 +87,7 @@ func newAdapter(registry *model.Registry) (*adapter, error) {
 		registry:     registry,
 		client: common_http.NewClient(
 			&http.Client{
-				Transport: common_http.GetHTTPTransport(common_http.WithInsecure(registry.Insecure)),
+				Transport: util.GetHTTPTransport(registry.Insecure),
 			},
 			modifiers...,
 		),

@@ -1,4 +1,4 @@
-import os
+import os, shutil
 
 from g import config_dir, templates_dir, DEFAULT_GID, DEFAULT_UID
 from utils.misc import prepare_dir

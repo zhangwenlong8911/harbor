@@ -10,11 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
-
 	commonhttp "github.com/goharbor/harbor/src/common/http"
 	"github.com/goharbor/harbor/src/lib/errors"
-	tracelib "github.com/goharbor/harbor/src/lib/trace"
 )
 
 const (
@@ -25,7 +22,7 @@ const (
 
 var (
 	once           sync.Once
-	chartTransport http.RoundTripper
+	chartTransport *http.Transport
 )
 
 // ChartClient is a http client to get the content from the external http server
@@ -41,13 +38,9 @@ type ChartClient struct {
 // credential can be nil
 func NewChartClient(credential *Credential) *ChartClient { // Create http client with customized timeouts
 	once.Do(func() {
-		chartTransport = commonhttp.NewTransport(
-			commonhttp.WithMaxIdleConns(maxIdleConnections),
-			commonhttp.WithIdleconnectionTimeout(idleConnectionTimeout),
-		)
-		if tracelib.Enabled() {
-			chartTransport = otelhttp.NewTransport(chartTransport)
-		}
+		chartTransport = commonhttp.GetHTTPTransport(commonhttp.SecureTransport).Clone()
+		chartTransport.MaxIdleConns = maxIdleConnections
+		chartTransport.IdleConnTimeout = idleConnectionTimeout
 	})
 
 	client := &http.Client{
