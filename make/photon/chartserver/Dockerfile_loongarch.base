@@ -1,6 +1,6 @@
-FROM photon:4.0
+FROM harbor.loongnix.cn/mirrorloongsoncontainers/loongnix-server:8.3
 
-RUN tdnf install -y shadow >>/dev/null\
-    && tdnf clean all \
+RUN dnf install -y shadow-utils >>/dev/null\
+    && dnf clean all \
     && groupadd -r -g 10000 chart \
     && useradd --no-log-init -m -g 10000 -u 10000 chart

@@ -75,7 +75,11 @@ CHECKENVCMD=checkenv.sh
 
 # parameters
 # default is true
-BUILD_PG96=true
+ifeq ($(shell uname -m),loongarch64)
+	BUILD_PG96=false
+else
+	BUILD_PG96=true
+endif
 REGISTRYSERVER=
 REGISTRYPROJECTNAME=goharbor
 DEVFLAG=true
@@ -260,6 +264,7 @@ PUSHSCRIPTPATH=$(MAKEPATH)
 PUSHSCRIPTNAME=pushimage.sh
 REGISTRYUSER=
 REGISTRYPASSWORD=
+
 
 # cmds
 DOCKERSAVE_PARA=$(DOCKER_IMAGE_NAME_PREPARE):$(VERSIONTAG) \
@@ -453,6 +458,8 @@ build_base_docker:
 		sleep 30 ; \
 		if [ $$name == "db" ]; then \
 		    make _build_base_db ; \
+		elif [ $(shell uname -m) == "loongarch64" ]; then \
+			$(DOCKERBUILD) --build-arg BUILD_PG96=$(BUILD_PG96) --pull --no-cache -f $(MAKEFILEPATH_PHOTON)/$$name/Dockerfile_loongarch.base -t $(BASEIMAGENAMESPACE)/harbor-$$name-base:$(BASEIMAGETAG) --label base-build-date=$(date +"%Y%m%d") . ; \
 		else \
 			$(DOCKERBUILD) --build-arg BUILD_PG96=$(BUILD_PG96) --pull --no-cache -f $(MAKEFILEPATH_PHOTON)/$$name/Dockerfile.base -t $(BASEIMAGENAMESPACE)/harbor-$$name-base:$(BASEIMAGETAG) --label base-build-date=$(date +"%Y%m%d") . ; \
 		fi ; \
@@ -466,6 +473,8 @@ _build_base_db:
 		echo "build pg96 rpm package." ; \
 		cd $(MAKEFILEPATH_PHOTON)/db && $(MAKEFILEPATH_PHOTON)/db/rpm_builder.sh && cd - ; \
 		$(DOCKERBUILD) --pull --no-cache -f $(MAKEFILEPATH_PHOTON)/db/Dockerfile.pg96 -t $(BASEIMAGENAMESPACE)/harbor-db-base:$(BASEIMAGETAG) --label base-build-date=$(date +"%Y%m%d") . ; \
+	elif [ $(shell uname -m) == "loongarch64" ]; then \
+ 		$(DOCKERBUILD) --pull --no-cache -f $(MAKEFILEPATH_PHOTON)/db/Dockerfile_loongarch.base -t $(BASEIMAGENAMESPACE)/harbor-db-base:$(BASEIMAGETAG) --label base-build-date=$(date +"%Y%m%d") . ; \
   	else \
  		$(DOCKERBUILD) --pull --no-cache -f $(MAKEFILEPATH_PHOTON)/db/Dockerfile.base -t $(BASEIMAGENAMESPACE)/harbor-db-base:$(BASEIMAGETAG) --label base-build-date=$(date +"%Y%m%d") . ; \
   	fi

@@ -1,3 +1,3 @@
-FROM photon:4.0
+FROM harbor.loongnix.cn/mirrorloongsoncontainers/loongnix-server:8.3
 
-RUN tdnf install -y redis && tdnf clean all
+RUN dnf install -y redis && dnf clean all

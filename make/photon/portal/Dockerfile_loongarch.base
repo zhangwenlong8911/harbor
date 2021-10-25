@@ -1,8 +1,8 @@
-FROM photon:4.0
+FROM harbor.loongnix.cn/mirrorloongsoncontainers/loongnix-server:8.3
 
-RUN tdnf install -y nginx shadow >> /dev/null \
-    && tdnf clean all \
+RUN dnf install -y nginx shadow-utils >> /dev/null \
+    && dnf clean all \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log \
-    && groupadd -r -g 10000 nginx && useradd --no-log-init -r -g 10000 -u 10000 nginx \
+#    && groupadd -r -g 10000 nginx && useradd --no-log-init -r -g 10000 -u 10000 nginx \
     && chown -R nginx:nginx /etc/nginx
