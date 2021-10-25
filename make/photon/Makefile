@@ -19,7 +19,12 @@ TIMESTAMP=$(shell date +"%Y%m%d")
 # docker parameters
 DOCKERCMD=$(shell which docker)
 DOCKERBUILD=$(DOCKERCMD) build --no-cache
-DOCKERBUILD_WITH_PULL_PARA=$(DOCKERBUILD) --pull=$(PULL_BASE_FROM_DOCKERHUB)
+ifeq ($(shell uname -m),loongarch64)
+	DOCKERBUILD_WITH_PULL_PARA=$(DOCKERBUILD)
+else
+	DOCKERBUILD_WITH_PULL_PARA=$(DOCKERBUILD) --pull=$(PULL_BASE_FROM_DOCKERHUB)
+endif
+
 DOCKERRMIMAGE=$(DOCKERCMD) rmi
 DOCKERIMAGES=$(DOCKERCMD) images
 BASEIMAGENAMESPACE=goharbor
@@ -44,7 +49,12 @@ DOCKERIMAGENAME_PREPARE=goharbor/$(PREPARE)
 
 PORTAL=portal
 DOCKERFILEPATH_PORTAL=$(DOCKERFILEPATH)/$(PORTAL)
-DOCKERFILENAME_PORTAL=Dockerfile
+ifeq ($(shell uname -m),loongarch64)
+	DOCKERFILENAME_PORTAL=Dockerfile_loongarch
+else
+	DOCKERFILENAME_PORTAL=Dockerfile
+endif
+
 DOCKERIMAGENAME_PORTAL=goharbor/harbor-$(PORTAL)
 
 CORE=core
@@ -84,7 +94,11 @@ DOCKERIMAGENAME_NGINX=goharbor/$(NGINX)-photon
 
 REGISTRY=registry
 DOCKERFILEPATH_REG=$(DOCKERFILEPATH)/$(REGISTRY)
-DOCKERFILENAME_REG=Dockerfile
+ifeq ($(shell uname -m),loongarch64)
+	DOCKERFILENAME_REG=Dockerfile
+else
+	DOCKERFILENAME_REG=Dockerfile
+endif
 DOCKERIMAGENAME_REG=goharbor/$(REGISTRY)-photon
 
 REGISTRYCTL=registryctl
@@ -280,6 +294,8 @@ define _build_base
 			echo "build pg96 rpm package." ; \
 			cd $(DOCKERFILEPATH)/db && $(DOCKERFILEPATH)/db/rpm_builder.sh && cd - ; \
 			$(DOCKERBUILD) --pull --no-cache -f $(DOCKERFILEPATH)/db/Dockerfile.pg96 -t $(BASEIMAGENAMESPACE)/harbor-db-base:$(BASEIMAGETAG) --label base-build-date=$(TIMESTAMP) . ; \
+		elif [ `uname -m` == "loongarch64" ] ; then \
+			$(DOCKERBUILD) -f $(2)/Dockerfile_loongarch.base -t $(BASEIMAGENAMESPACE)/harbor-$(1)-base:$(BASEIMAGETAG) --label base-build-date=$(TIMESTAMP) . ;\
 		else \
 			$(DOCKERBUILD) -f $(2)/Dockerfile.base -t $(BASEIMAGENAMESPACE)/harbor-$(1)-base:$(BASEIMAGETAG) --label base-build-date=$(TIMESTAMP) . ;\
 		fi ;\

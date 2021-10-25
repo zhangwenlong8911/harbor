@@ -15,7 +15,12 @@ mkdir -p binary
 rm -rf binary/* || true
 
 cd `dirname $0`
-docker build --build-arg NOTARY_VERSION=$1 --build-arg MIGRATE_VERSION=$2 -f ./binary.Dockerfile -t notary-binary .
+if [ `uname -m` == loongarch64 ]
+then
+	docker build --build-arg NOTARY_VERSION=$1 --build-arg MIGRATE_VERSION=$2 -f ./binary.Dockerfile_loongarch -t notary-binary .
+else
+	docker build --build-arg NOTARY_VERSION=$1 --build-arg MIGRATE_VERSION=$2 -f ./binary.Dockerfile -t notary-binary .
+fi
 
 echo 'copy the binary files to local...'
 ID=$(docker create notary-binary)

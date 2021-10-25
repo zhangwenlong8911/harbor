@@ -17,6 +17,6 @@ RUN dnf install -y /pg96/postgresql96-libs-9.6.21-1.ph4.x86_64.rpm /pg96/postgre
     && mkdir -p "$PGDATA" && chown -R postgres:postgres "$PGDATA" && chmod 777 "$PGDATA" \
     && sed -i "s|#listen_addresses = 'localhost'.*|listen_addresses = '*'|g" /usr/share/postgresql/postgresql.conf.sample \
     && sed -i "s|#unix_socket_directories = '/tmp'.*|unix_socket_directories = '/run/postgresql'|g" /usr/share/postgresql/postgresql.conf.sample \
-    && tdnf clean all
+    && dnf clean all
 
-RUN tdnf erase -y toybox && dnf install -y util-linux net-tools
+RUN dnf install -y util-linux net-tools
