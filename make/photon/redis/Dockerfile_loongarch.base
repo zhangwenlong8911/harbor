@@ -1,3 +1,7 @@
 FROM harbor.loongnix.cn/mirrorloongsoncontainers/loongnix-server:8.3
 
-RUN dnf install -y redis && dnf clean all
+RUN dnf install -y redis && dnf clean all \
+#    && find / -user redis | xargs chown 10001:10001 \
+#    && userdel redis \
+#    && groupadd -r -g 10001 redis && useradd --no-log-init -r -g 10001 -u 10001 redis
+

@@ -1,6 +1,6 @@
 FROM harbor.loongnix.cn/mirrorloongsoncontainers/loongnix-server:8.3
 
-RUN dnf install -y cronie rsyslog logrotate shadow-utils tar gzip sudo >> /dev/null\
+RUN dnf install -y cronie rsyslog logrotate shadow-utils tar gzip sudo net-tools >> /dev/null\
     && mkdir /var/spool/rsyslog \
     && groupadd -r -g 10000 syslog && useradd --no-log-init -r -g 10000 -u 10000 syslog \
     && dnf clean all \

@@ -2,7 +2,7 @@ ARG harbor_base_image_version
 ARG harbor_base_namespace
 FROM ${harbor_base_namespace}/harbor-db-base:${harbor_base_image_version}
 
-VOLUME /var/lib/postgresql/data
+VOLUME /var/lib/pgsql/data
 
 COPY ./make/photon/db/docker-entrypoint.sh /docker-entrypoint.sh
 COPY ./make/photon/db/initdb.sh /initdb.sh

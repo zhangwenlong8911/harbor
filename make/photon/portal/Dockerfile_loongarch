@@ -1,14 +1,13 @@
 ARG harbor_base_image_version
 ARG harbor_base_namespace
-FROM harbor.loongnix.cn/mirrorloongsoncontainers/nodejs/node:v12.19.0 as nodeportal
+FROM harbor.loongnix.cn/mirrorloongsoncontainers/nodejs/node:v14.16.1 as nodeportal
 
 WORKDIR /build_dir
 
 ARG npm_registry=https://registry.npmjs.org
 
 #待nodejs重新构建更换源之后删除
-RUN echo "deb http://10.2.5.28/os/lnd-20.loongarch64 DaoXiangHu-testing main contrib non-free" >/etc/apt/sources.list && \
-    apt-get update \
+RUN apt-get update \
     && apt-get install -y --no-install-recommends python-yaml
 
 COPY src/portal/package.json /build_dir
